@@ -47,6 +47,7 @@ void testConstructor()
 	// Then check all elements in the array are zero-initialized via objPos() default constructor
 	for(int i = 0; i < ARRAY_MAX_CAP; i++)
 	{
+		cout << zeroPos.pos->x;
 		currentPos = thisList.getElement(i);
 		actualCheck = zeroPos.isPosEqual(&currentPos);
 
