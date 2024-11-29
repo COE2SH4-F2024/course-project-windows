@@ -2,6 +2,7 @@
 #include "MacUILib.h"
 #include "objPos.h"
 #include "Player.h"
+#include "GameMechs.h"
 
 using namespace std;
 
@@ -16,7 +17,8 @@ void DrawScreen(void);
 void LoopDelay(void);
 void CleanUp(void);
 
-
+GameMechs* mainGame = new GameMechs();
+Player* player = new Player(mainGame);
 
 int main(void)
 {
@@ -68,6 +70,7 @@ void LoopDelay(void)
 void CleanUp(void)
 {
     MacUILib_clearScreen();    
-
+    delete player;
+    delete mainGame;
     MacUILib_uninit();
 }
