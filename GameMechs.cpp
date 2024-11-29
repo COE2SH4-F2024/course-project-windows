@@ -109,3 +109,4 @@ void GameMechs::generateFood(objPos blockOff) {
 objPos GameMechs::getFoodPos() const {
     return food; 
 }
+

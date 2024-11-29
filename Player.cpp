@@ -7,10 +7,12 @@ Player::Player(GameMechs* thisGMRef)
     mainGameMechsRef = thisGMRef;   
     myDir = STOP;
     playerPosList = new objPosArrayList;
+    foodPos = thisGMRef->getFoodPos();
     
     //setting head of snake
     objPos part = {5, 9, '*'};
     playerPosList->insertHead(part);
+    head = playerPosList->getHeadElement();
     // more actions to be included
 }
 
@@ -59,7 +61,6 @@ void Player::updatePlayerDir()
 void Player::movePlayer()
 {
     // PPA3 Finite State Machine logic
-    objPos head = playerPosList->getHeadElement();
     // movement implementation
     switch(myDir) {
         case LEFT: 
@@ -89,8 +90,20 @@ void Player::movePlayer()
         head.pos->y = 1;
     
     //insertion of head and removal of tail
-    playerPosList->insertHead(head);
-    playerPosList->removeTail();
+    if(checkFoodConsumption()) {
+        playerPosList->insertHead(head);
+        mainGameMechsRef->generateFood(head);
+    } else {
+        playerPosList->insertHead(head);
+        playerPosList->removeHead();
+    }
 }
+
+bool Player::checkFoodConsumption() {
+    return (head.pos->x == foodPos.pos->x && head.pos->y == foodPos.pos->y);
+}
+
+void increasePlayerLength();
+
 
 // More methods to be added
