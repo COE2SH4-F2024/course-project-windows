@@ -1,23 +1,28 @@
 #include "Player.h"
+#include "objPos.h"
 
 
 Player::Player(GameMechs* thisGMRef)
 {
     mainGameMechsRef = thisGMRef;   
     myDir = STOP;
-    playerPos = {4, 9, '*'}; 
+    playerPosList = new objPosArrayList;
+    //setting head of snake
+    objPos head = {9, 5, '*'};
+    playerPosList->insertHead(head);
     // more actions to be included
 }
 
 Player::~Player()
 {
+    delete[] playerPosList;
     // delete any heap members here
 }
 
-objPos Player::getPlayerPos() const
+objPosArrayList* Player::getPlayerPos() const
 {
     // return the reference to the playerPos array list
-    return playerPos;
+    return playerPosList;
 }
 
 void Player::updatePlayerDir()
@@ -54,34 +59,38 @@ void Player::updatePlayerDir()
 void Player::movePlayer()
 {
     // PPA3 Finite State Machine logic
-
+    objPos head = playerPosList->getHeadElement();
     // movement implementation
     switch(myDir) {
         case LEFT: 
-            playerPos.pos->y--; 
+            head.pos->y--; 
             break;
         case RIGHT: 
-            playerPos.pos->y++; 
+            head.pos->y++; 
             break;
         case UP: 
-            playerPos.pos->x--; 
+            head.pos->x--; 
             break;
         case DOWN: 
-            playerPos.pos->x++;
+            head.pos->x++;
             break;
         default: 
             break;
     }
 
     // wrap around implementation
-    if(playerPos.pos->x == 0) 
-        playerPos.pos->x = mainGameMechsRef->getBoardSizeX() - 1;
-    else if (playerPos.pos->x == mainGameMechsRef->getBoardSizeX())
-        playerPos.pos->x = 1;
-    else if (playerPos.pos->y == 0) 
-        playerPos.pos->y = mainGameMechsRef->getBoardSizeY() - 1;
-    else if (playerPos.pos->y == mainGameMechsRef->getBoardSizeY()) 
-        playerPos.pos->y = 1;
+    if(head.pos->x == 0) 
+        head.pos->x = mainGameMechsRef->getBoardSizeX() - 1;
+    else if (head.pos->x == mainGameMechsRef->getBoardSizeX())
+        head.pos->x = 1;
+    else if (head.pos->y == 0) 
+        head.pos->y = mainGameMechsRef->getBoardSizeY() - 1;
+    else if (head.pos->y == mainGameMechsRef->getBoardSizeY()) 
+        head.pos->y = 1;
+    
+    //insertion of head and removal of tail
+    playerPosList->insertHead(head);
+    playerPosList->removeTail();
 }
 
 // More methods to be added
