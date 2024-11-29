@@ -8,6 +8,11 @@ GameMechs::GameMechs()
     score = 0;
     exitFlag = false;
     loseFlag = false;
+
+    bitVectorSize = ((boardSizeX * boardSizeY) / 32) + 1;
+    bitVector = new int[bitVectorSize]();
+
+    srand(time(nullptr));
 }
 
 GameMechs::GameMechs(int boardX, int boardY)
@@ -17,12 +22,17 @@ GameMechs::GameMechs(int boardX, int boardY)
     score = 0;
     exitFlag = false;
     loseFlag = false;
+
+    bitVectorSize = ((boardSizeX * boardSizeY) / 32) + 1;
+    bitVector = new int[bitVectorSize]();
+
+    srand(time(nullptr));
 }
 
 // do you need a destructor?
 GameMechs::~GameMechs()
 {
-    //PETER: No reasonable implementation for now
+    delete[] bitVector;
 }
 
 bool GameMechs::getExitFlagStatus() const
@@ -64,7 +74,6 @@ int GameMechs::getBoardSizeY() const
     return boardSizeY;
 }
 
-
 void GameMechs::setExitTrue()
 {
     exitFlag = true;
@@ -82,7 +91,24 @@ void GameMechs::setInput(char this_input)
 
 void GameMechs::clearInput()
 {
-    input = NULL;
+    input = '\0';
 }
 
-// More methods should be added here
+void GameMechs::generateFood(objPos blockOff) {
+    int i, j, randX, randY, index;;
+
+    int playerIndex = blockOff.getObjPos().pos->y * getBoardSizeX() + blockOff.getObjPos().pos->x;
+    bitVector[playerIndex / 32] |= (1 << (playerIndex % 32));
+
+    do {
+        randX = rand() % (getBoardSizeX() - 2) + 1; 
+        randY = rand() % (getBoardSizeY() - 2) + 1;
+        index = randY * getBoardSizeX() + randX;
+    } while ((bitVector[index / 32] & (1 << (index % 32))) != 0);
+
+    food.setObjPos(randX, randY, '=');
+}
+
+objPos GameMechs::getFoodPos() const {
+    return food; 
+}

@@ -17,6 +17,9 @@ class GameMechs
         bool loseFlag;
         int score;
 
+        int *bitVector;
+        int bitVectorSize; 
+
         int boardSizeX;
         int boardSizeY;
 
@@ -41,6 +44,9 @@ class GameMechs
         
         int getScore() const;
         void incrementScore();
+
+        void generateFood(objPos blockOff);
+        objPos getFoodPos() const;
         
         // More methods should be added here
 };
