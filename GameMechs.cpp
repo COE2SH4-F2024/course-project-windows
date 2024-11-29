@@ -3,11 +3,12 @@
 
 GameMechs::GameMechs()
 {
-    boardSizeX = 30;
-    boardSizeY = 15;
+    boardSizeX = 15;
+    boardSizeY = 30;
     score = 0;
     exitFlag = false;
     loseFlag = false;
+    input = '\0';
 
     bitVectorSize = ((boardSizeX * boardSizeY) / 32) + 1;
     bitVector = new int[bitVectorSize]();
@@ -47,10 +48,7 @@ bool GameMechs::getLoseFlagStatus() const
 
 char GameMechs::getInput() const
 {
-    if (MacUILib_hasChar()){
-        return MacUILib_getChar();
-    }
-    return NULL; //PETER: return null if no new character
+    return input;
 }
 
 int GameMechs::getScore() const
@@ -94,7 +92,7 @@ void GameMechs::clearInput()
 }
 
 void GameMechs::generateFood(objPos blockOff) {
-    int i, j, randX, randY, index;;
+    int i, j, randX, randY, index;
 
     int playerIndex = blockOff.getObjPos().pos->y * getBoardSizeX() + blockOff.getObjPos().pos->x;
     bitVector[playerIndex / 32] |= (1 << (playerIndex % 32));

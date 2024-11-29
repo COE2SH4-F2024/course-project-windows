@@ -32,6 +32,9 @@ class objPos
         char getSymbolIfPosEqual(const objPos* refPos) const;
         
         bool isPosEqual(const objPos* refPos) const;
+
+        int getPosX() const;//getting x
+        int getPosY() const;//getting y
 };
 
 #endif

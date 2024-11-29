@@ -3,6 +3,7 @@
 #include "objPos.h"
 #include "Player.h"
 #include "GameMechs.h"
+#include "objPosArrayList.h"
 
 using namespace std;
 
@@ -17,8 +18,8 @@ void DrawScreen(void);
 void LoopDelay(void);
 void CleanUp(void);
 
-GameMechs* mainGame = new GameMechs();
-Player* player = new Player(mainGame);
+GameMechs* mainGame;
+Player* player;
 
 int main(void)
 {
@@ -44,21 +45,60 @@ void Initialize(void)
     MacUILib_clearScreen();
 
     exitFlag = false;
+
+    mainGame = new GameMechs();
+    player = new Player(mainGame);
 }
 
 void GetInput(void)
 {
-   
+   if (MacUILib_hasChar()){
+        mainGame->setInput(MacUILib_getChar());
+    }
 }
 
 void RunLogic(void)
 {
-    
+    player->updatePlayerDir();
+    player->movePlayer();
+    exitFlag = mainGame->getExitFlagStatus();
 }
 
 void DrawScreen(void)
 {
-    MacUILib_clearScreen();    
+    MacUILib_clearScreen();
+    int width = mainGame->getBoardSizeX();
+    int height = mainGame->getBoardSizeY();
+    int snakePrintCount = 0; //to count 
+    objPosArrayList* snake = player->getPlayerPos(); 
+
+    for (int i = 0; i < width; i++){
+        for (int j = 0; j < height; j++){
+            if(i == 0 || i == (width-1) || j == 0 || j == (height-1)){ // border creation
+                MacUILib_printf("#");
+                continue; //to go back to printing
+            }
+            
+            bool printed = false; //to hold value if a snake part is printed
+
+            for (int k = 0; (k < snake->getSize()) && (snakePrintCount < snake->getSize()) && (!printed) ; k++){ 
+                //only runs when snake is not fully printed
+                int posX = snake->getElement(k).getObjPos().getPosX();
+                int posY = snake->getElement(k).getObjPos().getPosY();
+                if ((i == posX) && (j == posY))
+                {
+                    MacUILib_printf("%c", (snake->getElement(k).getSymbol()));
+                    snakePrintCount++;
+                    printed = true;
+                }
+            }
+
+            if (!(printed)){
+                MacUILib_printf(" ");// runs if none of the items in the bin are printed
+            } 
+        }
+        MacUILib_printf("\n");
+    }    
 }
 
 void LoopDelay(void)

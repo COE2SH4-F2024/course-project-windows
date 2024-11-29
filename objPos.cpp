@@ -87,3 +87,14 @@ char objPos::getSymbolIfPosEqual(const objPos* refPos) const
     else
         return 0;
 }
+
+int objPos::getPosX() const
+{
+    return pos->x;
+}
+
+
+int objPos::getPosY() const
+{
+    return pos->y;
+}
