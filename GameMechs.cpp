@@ -29,7 +29,6 @@ GameMechs::GameMechs(int boardX, int boardY)
     srand(time(nullptr));
 }
 
-// do you need a destructor?
 GameMechs::~GameMechs()
 {
     delete[] bitVector;
