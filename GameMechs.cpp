@@ -90,11 +90,21 @@ void GameMechs::clearInput()
     input = '\0';
 }
 
-void GameMechs::generateFood(objPos blockOff) {
+void GameMechs::generateFood(objPos blockOff, objPosArrayList* snakeBody) {
     int randX, randY, index;
 
     int blockIndex = blockOff.getObjPos().pos->y * getBoardSizeX() + blockOff.getObjPos().pos->x;
     bitVector[blockIndex / 32] |= (1 << (blockIndex % 32));
+
+    for (int i = 0; i < snakeBody->getSize(); i++) {
+        int snakeX = snakeBody->getElement(i).getObjPos().getPosX();
+        int snakeY = snakeBody->getElement(i).getObjPos().getPosY();
+        int snakeIndex = snakeY * getBoardSizeX() + snakeX;
+
+        if (snakeIndex >= 0 && snakeIndex < boardSizeX * boardSizeY) {
+            bitVector[snakeIndex / 32] |= (1 << (snakeIndex % 32));
+        }
+    }
 
     do {
         randX = rand() % (getBoardSizeX() - 2) + 1;

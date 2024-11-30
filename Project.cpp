@@ -60,7 +60,7 @@ void Initialize(void)
     }
 
 
-    mainGame->generateFood(snake->getHeadElement());
+    mainGame->generateFood(snake->getHeadElement(), snake);
 }
 
 void GetInput(void)

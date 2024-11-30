@@ -92,8 +92,9 @@ void Player::movePlayer()
     
     //insertion of head and removal of tail
     foodPos = mainGameMechsRef->getFoodPos();
+    
     if(checkFoodConsumption()) {
-        mainGameMechsRef->generateFood(head);
+        mainGameMechsRef->generateFood(head, playerPosList);
         playerPosList->insertHead(head);
     } else {
         playerPosList->insertHead(head);
