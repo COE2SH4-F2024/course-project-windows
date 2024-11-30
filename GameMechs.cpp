@@ -9,97 +9,77 @@ GameMechs::GameMechs() {
     loseFlag = false;
     input = '\0';
 
-    // Allocate and zero-initialize bitVector
     bitVectorSize = ((boardSizeX * boardSizeY) / 32) + 1;
     bitVector = new int[bitVectorSize]();
-    srand(time(0));
 }
 
-
-GameMechs::GameMechs(int boardX, int boardY)
-{
+GameMechs::GameMechs(int boardX, int boardY) {
     boardSizeX = boardX;
     boardSizeY = boardY;
     score = 0;
     exitFlag = false;
     loseFlag = false;
+    input = '\0';
 
     bitVectorSize = ((boardSizeX * boardSizeY) / 32) + 1;
     bitVector = new int[bitVectorSize]();
-    srand(time(0));
 }
 
-GameMechs::~GameMechs()
-{
+GameMechs::~GameMechs() {
     delete[] bitVector;
 }
 
-bool GameMechs::getExitFlagStatus() const
-{
+bool GameMechs::getExitFlagStatus() const {
     return exitFlag;
 }
 
-bool GameMechs::getLoseFlagStatus() const
-{
+bool GameMechs::getLoseFlagStatus() const {
     return loseFlag;
 }
     
-
-char GameMechs::getInput() const
-{
+char GameMechs::getInput() const {
     return input;
 }
 
-int GameMechs::getScore() const
-{
+int GameMechs::getScore() const {
     return score;
 }
 
-void GameMechs::incrementScore()
-{
+void GameMechs::incrementScore() {
     score++;
 }
 
-int GameMechs::getBoardSizeX() const
-{
+int GameMechs::getBoardSizeX() const {
     return boardSizeX;
 }
 
-int GameMechs::getBoardSizeY() const
-{
+int GameMechs::getBoardSizeY() const {
     return boardSizeY;
 }
 
-void GameMechs::setExitTrue()
-{
+void GameMechs::setExitTrue() {
     exitFlag = true;
 }
 
-void GameMechs::setLoseFlag()
-{
+void GameMechs::setLoseFlag() {
     loseFlag = true;
 }
 
-void GameMechs::setInput(char this_input)
-{
+void GameMechs::setInput(char this_input) {
     input = this_input;
 }
 
-void GameMechs::clearInput()
-{
+void GameMechs::clearInput() {
     input = '\0';
 }
 
-void GameMechs::generateFood(objPos blockOff, objPosArrayList* snakeBody) {
-    int randX, randY, index;
+void GameMechs::generateFood(objPosArrayList* snakeBody) {
+    int randX, randY, snakeX, snakeY, snakeIndex, index, i;
 
-    int blockIndex = blockOff.getObjPos().pos->y * getBoardSizeX() + blockOff.getObjPos().pos->x;
-    bitVector[blockIndex / 32] |= (1 << (blockIndex % 32));
-
-    for (int i = 0; i < snakeBody->getSize(); i++) {
-        int snakeX = snakeBody->getElement(i).getObjPos().getPosX();
-        int snakeY = snakeBody->getElement(i).getObjPos().getPosY();
-        int snakeIndex = snakeY * getBoardSizeX() + snakeX;
+    for (i = 0; i < snakeBody->getSize(); i++) {
+        snakeX = snakeBody->getElement(i).getObjPos().getPosX();
+        snakeY = snakeBody->getElement(i).getObjPos().getPosY();
+        snakeIndex = snakeY * getBoardSizeX() + snakeX;
 
         if (snakeIndex >= 0 && snakeIndex < boardSizeX * boardSizeY) {
             bitVector[snakeIndex / 32] |= (1 << (snakeIndex % 32));
@@ -118,4 +98,3 @@ void GameMechs::generateFood(objPos blockOff, objPosArrayList* snakeBody) {
 objPos GameMechs::getFoodPos() const {
     return food;
 }
-

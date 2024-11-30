@@ -22,9 +22,7 @@ GameMechs* mainGame;
 Player* player;
 objPosArrayList* snake;
 
-int main(void)
-{
-
+int main(void) {
     Initialize();
 
     while(exitFlag == false)  
@@ -36,12 +34,9 @@ int main(void)
     }
 
     CleanUp();
-
 }
 
-
-void Initialize(void)
-{
+void Initialize(void) {
     srand(time(0));
 
     MacUILib_init();
@@ -49,29 +44,20 @@ void Initialize(void)
 
     exitFlag = false;
 
-    if (!mainGame) {
-        mainGame = new GameMechs();  // Create GameMechs only once
-    }
-    if (!player) {
-        player = new Player(mainGame);
-    }
-    if (!snake) {
-        snake = new objPosArrayList();
-    }
+    mainGame = new GameMechs();
+    player = new Player(mainGame);
+    snake = new objPosArrayList();
 
-
-    mainGame->generateFood(snake->getHeadElement(), snake);
+    mainGame->generateFood(snake);
 }
 
-void GetInput(void)
-{
-   if (MacUILib_hasChar()){
+void GetInput(void) {
+    if (MacUILib_hasChar()) {
         mainGame->setInput(MacUILib_getChar());
     }
 }
 
-void RunLogic(void)
-{
+void RunLogic(void) {
     player->updatePlayerDir();
     player->movePlayer();
 
@@ -80,8 +66,7 @@ void RunLogic(void)
     exitFlag = mainGame->getExitFlagStatus();
 }
 
-void DrawScreen(void)
-{
+void DrawScreen(void) {
     MacUILib_clearScreen();
     int width = mainGame->getBoardSizeX();
     int height = mainGame->getBoardSizeY();
@@ -118,20 +103,28 @@ void DrawScreen(void)
         }
         MacUILib_printf("\n");
     }    
+
+    if (!mainGame->getExitFlagStatus()) {
+        MacUILib_printf("\nControls: W = Up, S = Down, A = Left, D = Right, / = Exit\n");
+        MacUILib_printf("Score: %d\n", mainGame->getScore());
+        MacUILib_printf("Objective: Eat as much food as possible.\n");
+    }
 }
 
-void LoopDelay(void)
-{
+void LoopDelay(void) {
     MacUILib_Delay(DELAY_CONST); // 0.1s delay
 }
 
-
-void CleanUp(void)
-{
+void CleanUp(void) {
     MacUILib_clearScreen();    
     delete player;
     delete mainGame;
     delete snake;
+
+    if (mainGame->getLoseFlagStatus() && mainGame->getExitFlagStatus())
+        MacUILib_printf("Collision Detected! You lose!\n");
+    else
+        MacUILib_printf("Forced Exit!\n");
     MacUILib_uninit();
 }
 

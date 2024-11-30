@@ -5,8 +5,7 @@
 
 #include "objPos.h"
 
-class objPosArrayList
-{
+class objPosArrayList {
     private:
         objPos* aList;
         int listSize;

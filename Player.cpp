@@ -3,35 +3,29 @@
 #include "MacUILib.h"
 
 
-Player::Player(GameMechs* thisGMRef)
-{
+Player::Player(GameMechs* thisGMRef) {
     mainGameMechsRef = thisGMRef;   
     myDir = STOP;
     playerPosList = new objPosArrayList;
     foodPos = thisGMRef->getFoodPos();
     
-    //setting head of snake
-    objPos part = {5, 9, '*'};
+    objPos part = {7, 15, '*'};
     playerPosList->insertHead(part);
+
     head = playerPosList->getHeadElement();
-    // more actions to be included
 }
 
-Player::~Player()
-{
+Player::~Player() {
     delete[] playerPosList;
-    // delete any heap members here
+    delete[] mainGameMechsRef;
 }
 
-objPosArrayList* Player::getPlayerPos() const
-{
-    // return the reference to the playerPos array list
+objPosArrayList* Player::getPlayerPos() const {
     return playerPosList;
 }
 
 void Player::updatePlayerDir()
 {
-    // PPA3 input processing logic
     if(mainGameMechsRef->getInput() != '\0') {
         switch(mainGameMechsRef->getInput()) {                      
             case '/':  
@@ -59,10 +53,7 @@ void Player::updatePlayerDir()
     }
 }
 
-void Player::movePlayer()
-{
-    // PPA3 Finite State Machine logic
-    // movement implementation
+void Player::movePlayer() {
     switch(myDir) {
         case LEFT: 
             (head.pos->y)--; 
@@ -80,7 +71,6 @@ void Player::movePlayer()
             break;
     }
 
-    // wrap around implementation
     if(head.pos->x == 0) 
         head.pos->x = mainGameMechsRef->getBoardSizeX()-2;
     else if (head.pos->x == (mainGameMechsRef->getBoardSizeX()-1))
@@ -90,12 +80,14 @@ void Player::movePlayer()
     else if (head.pos->y == (mainGameMechsRef->getBoardSizeY()-1)) 
         head.pos->y = 1;
     
-    //insertion of head and removal of tail
+    checkPlayerCollision();
+
     foodPos = mainGameMechsRef->getFoodPos();
     
     if(checkFoodConsumption()) {
-        mainGameMechsRef->generateFood(head, playerPosList);
-        playerPosList->insertHead(head);
+        increasePlayerLength();
+        mainGameMechsRef->incrementScore();
+        mainGameMechsRef->generateFood(playerPosList);
     } else {
         playerPosList->insertHead(head);
         playerPosList->removeTail();
@@ -106,4 +98,19 @@ bool Player::checkFoodConsumption() {
     return(head.getPosX() == foodPos.getPosX() && head.getPosY() == foodPos.getPosY());
 }
 
-// More methods to be added
+void Player::increasePlayerLength() {
+    playerPosList->insertHead(head);
+}
+
+void Player::checkPlayerCollision() {
+    int i;
+    for (i = 1; i < playerPosList->getSize(); i++) {
+        int snakeX = playerPosList->getElement(i).getObjPos().getPosX();
+        int snakeY = playerPosList->getElement(i).getObjPos().getPosY();
+
+        if (head.getPosX() == snakeX && head.getPosY() == snakeY) {
+            mainGameMechsRef->setLoseFlag();
+            mainGameMechsRef->setExitTrue();
+        }
+    }
+}

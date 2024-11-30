@@ -9,8 +9,7 @@
 
 using namespace std;
 
-class GameMechs
-{
+class GameMechs {
     private:
         char input;
         bool exitFlag;
@@ -28,7 +27,7 @@ class GameMechs
     public:
         GameMechs();
         GameMechs(int boardX, int boardY);
-        ~GameMechs(); // is this one needed at all? Why or why not?
+        ~GameMechs(); 
         
         bool getExitFlagStatus() const; 
         void setExitTrue();
@@ -45,10 +44,8 @@ class GameMechs
         int getScore() const;
         void incrementScore();
 
-        void generateFood(objPos blockOff, objPosArrayList* snakeBody);
+        void generateFood(objPosArrayList* snakeBody);
         objPos getFoodPos() const;
-        
-        // More methods should be added here
 };
 
 #endif
