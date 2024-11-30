@@ -25,8 +25,7 @@ objPosArrayList* snake;
 int main(void) {
     Initialize();
 
-    while(exitFlag == false)  
-    {
+    while(exitFlag == false) {
         GetInput();
         RunLogic();
         DrawScreen();
@@ -46,9 +45,8 @@ void Initialize(void) {
 
     mainGame = new GameMechs();
     player = new Player(mainGame);
-    snake = new objPosArrayList();
 
-    mainGame->generateFood(snake);
+    mainGame->generateFood(player->getPlayerPos());
 }
 
 void GetInput(void) {
@@ -72,59 +70,60 @@ void DrawScreen(void) {
     int height = mainGame->getBoardSizeY();
     int snakePrintCount = 0; //to count 
     
-    for (int i = 0; i < width; i++){
-        for (int j = 0; j < height; j++){
-            if(i == 0 || i == (width-1) || j == 0 || j == (height-1)){ // border creation
-                MacUILib_printf("#");
-                continue; //to go back to printing
-            }
-            
-            bool printed = false; //to hold value if a snake part is printed
-
-            for (int k = 0; (k < snake->getSize()) && (snakePrintCount < snake->getSize()) && (!printed) ; k++){ 
-                //only runs when snake is not fully printed
-                int posX = snake->getElement(k).getObjPos().getPosX();
-                int posY = snake->getElement(k).getObjPos().getPosY();
-                if ((i == posX) && (j == posY))
-                {
-                    MacUILib_printf("%c", (snake->getElement(k).getSymbol()));
-                    snakePrintCount++;
-                    printed = true;
+    if(!mainGame->getExitFlagStatus()) {
+        for (int i = 0; i < width; i++){
+            for (int j = 0; j < height; j++){
+                if(i == 0 || i == (width-1) || j == 0 || j == (height-1)) {
+                    MacUILib_printf("#");
+                    continue; 
                 }
-            }
+                
+                bool printed = false; 
 
-            if (!printed){
-                if (i == mainGame->getFoodPos().pos->x && j == mainGame->getFoodPos().pos->y) {
-                    MacUILib_printf("%c", mainGame->getFoodPos().symbol);
+                for (int k = 0; (k < player->getPlayerPos()->getSize()) && (snakePrintCount < player->getPlayerPos()->getSize()) && (!printed); k++) { 
+                    int posX = player->getPlayerPos()->getElement(k).getObjPos().getPosX();
+                    int posY = player->getPlayerPos()->getElement(k).getObjPos().getPosY();
+                    if ((i == posX) && (j == posY)) {
+                        MacUILib_printf("%c", (player->getPlayerPos()->getElement(k).getSymbol()));
+                        snakePrintCount++;
+                        printed = true;
+                    }
                 }
-                else
-                    MacUILib_printf(" "); // runs if none of the items in the bin are printed
-            } 
-        }
-        MacUILib_printf("\n");
-    }    
 
-    if (!mainGame->getExitFlagStatus()) {
-        MacUILib_printf("\nControls: W = Up, S = Down, A = Left, D = Right, / = Exit\n");
+                if (!printed) {
+                    if (i == mainGame->getFoodPos().pos->x && j == mainGame->getFoodPos().pos->y) {
+                        MacUILib_printf("%c", mainGame->getFoodPos().symbol);
+                    } else
+                        MacUILib_printf(" ");
+                } 
+            }
+            MacUILib_printf("\n");
+        }    
+        
         MacUILib_printf("Score: %d\n", mainGame->getScore());
-        MacUILib_printf("Objective: Eat as much food as possible.\n");
-    }
+        MacUILib_printf("\nControls: W = Up, S = Down, A = Left, D = Right, / = Exit\n");
+    } else if(mainGame->getLoseFlagStatus() && mainGame->getExitFlagStatus()) 
+        MacUILib_printf("Collision Detected! You lose!\n");
+    else if(mainGame->getExitFlagStatus())
+        MacUILib_printf("Forced Exit!\n");
 }
 
 void LoopDelay(void) {
-    MacUILib_Delay(DELAY_CONST); // 0.1s delay
+    if(!mainGame->getLoseFlagStatus() && !mainGame->getExitFlagStatus())
+        MacUILib_Delay(DELAY_CONST); // 0.1s delay
+    else
+        MacUILib_Delay(DELAY_CONST*30);
 }
 
 void CleanUp(void) {
     MacUILib_clearScreen();    
-    delete player;
-    delete mainGame;
-    delete snake;
 
-    if (mainGame->getLoseFlagStatus() && mainGame->getExitFlagStatus())
-        MacUILib_printf("Collision Detected! You lose!\n");
-    else
-        MacUILib_printf("Forced Exit!\n");
+    delete player;
+    player = nullptr;
+
+    delete mainGame;
+    mainGame = nullptr;
+
     MacUILib_uninit();
 }
 

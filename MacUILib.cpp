@@ -42,7 +42,7 @@ print_ptr MacUILib_printf;
 	{
 		// No implementation required
 		//system("cls");
-		MacUILib_printf("\nPress ENTER to Shut Down\n");
+		MacUILib_printf("Press ENTER to Shut Down\n");
 		getchar();
 	}
 	
@@ -105,7 +105,7 @@ print_ptr MacUILib_printf;
 	void MacUILib_uninit(void)
 	{
 		//clear();
-		MacUILib_printf("\nPress ENTER to Shut Down\n");
+		MacUILib_printf("Press ENTER to Shut Down\n");
 		refresh();
 		getchar();
 		endwin();

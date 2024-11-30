@@ -16,8 +16,7 @@ Player::Player(GameMechs* thisGMRef) {
 }
 
 Player::~Player() {
-    delete[] playerPosList;
-    delete[] mainGameMechsRef;
+    delete playerPosList;
 }
 
 objPosArrayList* Player::getPlayerPos() const {

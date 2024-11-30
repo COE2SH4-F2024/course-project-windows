@@ -4,6 +4,7 @@
         "type_traits": "cpp",
         "iostream": "cpp",
         "cstdlib": "cpp",
-        "new": "cpp"
+        "new": "cpp",
+        "numbers": "cpp"
     }
 }
