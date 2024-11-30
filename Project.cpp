@@ -20,6 +20,7 @@ void CleanUp(void);
 
 GameMechs* mainGame;
 Player* player;
+objPosArrayList* snake;
 
 int main(void)
 {
@@ -41,13 +42,25 @@ int main(void)
 
 void Initialize(void)
 {
+    srand(time(0));
+
     MacUILib_init();
     MacUILib_clearScreen();
 
     exitFlag = false;
 
-    mainGame = new GameMechs();
-    player = new Player(mainGame);
+    if (!mainGame) {
+        mainGame = new GameMechs();  // Create GameMechs only once
+    }
+    if (!player) {
+        player = new Player(mainGame);
+    }
+    if (!snake) {
+        snake = new objPosArrayList();
+    }
+
+
+    mainGame->generateFood(snake->getHeadElement());
 }
 
 void GetInput(void)
@@ -61,6 +74,9 @@ void RunLogic(void)
 {
     player->updatePlayerDir();
     player->movePlayer();
+
+    snake = player->getPlayerPos();
+
     exitFlag = mainGame->getExitFlagStatus();
 }
 
@@ -70,8 +86,7 @@ void DrawScreen(void)
     int width = mainGame->getBoardSizeX();
     int height = mainGame->getBoardSizeY();
     int snakePrintCount = 0; //to count 
-    objPosArrayList* snake = player->getPlayerPos(); 
-
+    
     for (int i = 0; i < width; i++){
         for (int j = 0; j < height; j++){
             if(i == 0 || i == (width-1) || j == 0 || j == (height-1)){ // border creation
@@ -93,8 +108,12 @@ void DrawScreen(void)
                 }
             }
 
-            if (!(printed)){
-                MacUILib_printf(" ");// runs if none of the items in the bin are printed
+            if (!printed){
+                if (i == mainGame->getFoodPos().pos->x && j == mainGame->getFoodPos().pos->y) {
+                    MacUILib_printf("%c", mainGame->getFoodPos().symbol);
+                }
+                else
+                    MacUILib_printf(" "); // runs if none of the items in the bin are printed
             } 
         }
         MacUILib_printf("\n");
@@ -112,5 +131,9 @@ void CleanUp(void)
     MacUILib_clearScreen();    
     delete player;
     delete mainGame;
+    delete snake;
     MacUILib_uninit();
 }
+
+
+

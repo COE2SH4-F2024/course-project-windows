@@ -1,8 +1,7 @@
 #include "GameMechs.h"
 #include "MacUILib.h"
 
-GameMechs::GameMechs()
-{
+GameMechs::GameMechs() {
     boardSizeX = 15;
     boardSizeY = 30;
     score = 0;
@@ -10,11 +9,12 @@ GameMechs::GameMechs()
     loseFlag = false;
     input = '\0';
 
+    // Allocate and zero-initialize bitVector
     bitVectorSize = ((boardSizeX * boardSizeY) / 32) + 1;
     bitVector = new int[bitVectorSize]();
-
-    srand(time(nullptr));
+    srand(time(0));
 }
+
 
 GameMechs::GameMechs(int boardX, int boardY)
 {
@@ -26,8 +26,7 @@ GameMechs::GameMechs(int boardX, int boardY)
 
     bitVectorSize = ((boardSizeX * boardSizeY) / 32) + 1;
     bitVector = new int[bitVectorSize]();
-
-    srand(time(nullptr));
+    srand(time(0));
 }
 
 GameMechs::~GameMechs()
@@ -92,13 +91,13 @@ void GameMechs::clearInput()
 }
 
 void GameMechs::generateFood(objPos blockOff) {
-    int i, j, randX, randY, index;
+    int randX, randY, index;
 
-    int playerIndex = blockOff.getObjPos().pos->y * getBoardSizeX() + blockOff.getObjPos().pos->x;
-    bitVector[playerIndex / 32] |= (1 << (playerIndex % 32));
+    int blockIndex = blockOff.getObjPos().pos->y * getBoardSizeX() + blockOff.getObjPos().pos->x;
+    bitVector[blockIndex / 32] |= (1 << (blockIndex % 32));
 
     do {
-        randX = rand() % (getBoardSizeX() - 2) + 1; 
+        randX = rand() % (getBoardSizeX() - 2) + 1;
         randY = rand() % (getBoardSizeY() - 2) + 1;
         index = randY * getBoardSizeX() + randX;
     } while ((bitVector[index / 32] & (1 << (index % 32))) != 0);
@@ -107,6 +106,6 @@ void GameMechs::generateFood(objPos blockOff) {
 }
 
 objPos GameMechs::getFoodPos() const {
-    return food; 
+    return food;
 }
 

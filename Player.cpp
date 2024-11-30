@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "objPos.h"
+#include "MacUILib.h"
 
 
 Player::Player(GameMechs* thisGMRef)
@@ -90,20 +91,18 @@ void Player::movePlayer()
         head.pos->y = 1;
     
     //insertion of head and removal of tail
+    foodPos = mainGameMechsRef->getFoodPos();
     if(checkFoodConsumption()) {
-        playerPosList->insertHead(head);
         mainGameMechsRef->generateFood(head);
+        playerPosList->insertHead(head);
     } else {
         playerPosList->insertHead(head);
-        playerPosList->removeHead();
+        playerPosList->removeTail();
     }
 }
 
 bool Player::checkFoodConsumption() {
-    return (head.pos->x == foodPos.pos->x && head.pos->y == foodPos.pos->y);
+    return(head.getPosX() == foodPos.getPosX() && head.getPosY() == foodPos.getPosY());
 }
-
-void increasePlayerLength();
-
 
 // More methods to be added
