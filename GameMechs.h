@@ -9,43 +9,52 @@
 
 using namespace std;
 
+/*
+GameMechs: Handles the core game logic and mechanics, including board configuration, score tracking, input handling, and food generation.
+*/
+
 class GameMechs {
     private:
-        char input;
-        bool exitFlag;
-        bool loseFlag;
-        int score;
+        char input; // Stores the current input character
 
-        int *bitVector;
-        int bitVectorSize; 
+        bool exitFlag; // Flag to determine if the game should exit
+        bool loseFlag; // Flag to determine if the player has lost
 
-        int boardSizeX;
-        int boardSizeY;
+        int score; // Current game score
 
-        objPos food;
+        int *bitArray; // Bit array for efficient collision detection
+        int bitArraySize; // Size of the bit array
+
+        int boardSizeX; // Width of the game board
+        int boardSizeY; // Height of the game board
+
+        objPos food; // Position of the food on the board
 
     public:
-        GameMechs();
-        GameMechs(int boardX, int boardY);
-        ~GameMechs(); 
+        // Constructors and Destructor
+        GameMechs(); // Default constructor
+        GameMechs(int boardX, int boardY); // Parameterized constructor
+        ~GameMechs(); // Destructor to clean up resources
         
-        bool getExitFlagStatus() const; 
-        void setExitTrue();
-        bool getLoseFlagStatus() const;
-        void setLoseFlag();
+        // Accessors and Mutators
+        bool getExitFlagStatus() const; // Check if exit flag is set
+        void setExitTrue(); // Set exit flag
+        bool getLoseFlagStatus() const; // Check if lose flag is set
+        void setLoseFlag(); // Set lose flag
 
-        char getInput() const;
-        void setInput(char this_input);
-        void clearInput();
+        char getInput() const; // Get the current input
+        void setInput(char this_input); // Set the current input
+        void clearInput(); // Clear the input
 
-        int getBoardSizeX() const;
-        int getBoardSizeY() const;
+        int getBoardSizeX() const; // Get board width
+        int getBoardSizeY() const; // Get board height
         
-        int getScore() const;
-        void incrementScore();
+        int getScore() const; // Get current score
+        void incrementScore(); // Increment the score
 
-        void generateFood(objPosArrayList* snakeBody);
-        objPos getFoodPos() const;
+        // Food management within GameMechs
+        void generateFood(objPosArrayList* snakeBody); // Generate a new food position
+        objPos getFoodPos() const; // Get the current food position
 };
 
 #endif

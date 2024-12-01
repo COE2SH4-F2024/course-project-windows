@@ -2,57 +2,61 @@
 #include "objPos.h"
 #include "MacUILib.h"
 
-
+// Initializes the Player object with a reference to the game mechanics
 Player::Player(GameMechs* thisGMRef) {
     mainGameMechsRef = thisGMRef;   
-    myDir = STOP;
-    playerPosList = new objPosArrayList;
-    foodPos = thisGMRef->getFoodPos();
+    myDir = STOP; // Default direction is stopped
+    playerPosList = new objPosArrayList; // Initializes the player's position list
+    foodPos = thisGMRef->getFoodPos(); // Retrieves initial food position
     
-    objPos part = {7, 15, '*'};
+    objPos part = {7, 15, '*'}; // Sets the initial position and symbol of the player
     playerPosList->insertHead(part);
 
-    head = playerPosList->getHeadElement();
+    head = playerPosList->getHeadElement(); // Retrieves head position
 }
 
+// Frees memory allocated for the player's position list
 Player::~Player() {
     delete playerPosList;
 }
 
+// Retrieves the current position list of the player
 objPosArrayList* Player::getPlayerPos() const {
     return playerPosList;
 }
 
-void Player::updatePlayerDir()
-{
+// Updates the player's direction based on the input character
+void Player::updatePlayerDir() {
     if(mainGameMechsRef->getInput() != '\0') {
         switch(mainGameMechsRef->getInput()) {                      
-            case '/':  
+            case '/': // Exit command
                 mainGameMechsRef->setExitTrue(); 
                 break;
-            case 'a':  
+            case 'a':  // Move left, if not moving right
                 if(myDir != RIGHT) 
                     myDir = LEFT; 
                 break;
-            case 'd':  
+            case 'd': // Move right, if not moving left
                 if(myDir != LEFT) 
                     myDir = RIGHT; 
                 break;
-            case 'w':  
+            case 'w': // Move up, if not moving down
                 if(myDir != DOWN) 
                     myDir = UP; 
                 break;
-            case 's':  
+            case 's': // Move down, if not moving up
                 if(myDir != UP) 
                     myDir = DOWN; 
                 break;
-            default:   
+            default: // Ignore invalid input
                 break;
         }
     }
 }
 
+// Moves the player in the current direction and handles boundary wrapping
 void Player::movePlayer() {
+    // Update head position based on direction
     switch(myDir) {
         case LEFT: 
             (head.pos->y)--; 
@@ -70,46 +74,49 @@ void Player::movePlayer() {
             break;
     }
 
-    if(head.pos->x == 0) 
+    // Wrap around the board edges
+    if(head.getPosX() == 0) 
         head.pos->x = mainGameMechsRef->getBoardSizeX()-2;
-    else if (head.pos->x == (mainGameMechsRef->getBoardSizeX()-1))
+    else if (head.getPosX() == (mainGameMechsRef->getBoardSizeX()-1))
         head.pos->x = 1;
-    else if (head.pos->y == 0) 
+    else if (head.getPosY() == 0) 
         head.pos->y = mainGameMechsRef->getBoardSizeY()-2;
-    else if (head.pos->y == (mainGameMechsRef->getBoardSizeY()-1)) 
+    else if (head.getPosY() == (mainGameMechsRef->getBoardSizeY()-1)) 
         head.pos->y = 1;
     
-    checkPlayerCollision();
+    checkPlayerCollision(); // Check if the player collides with itself
 
-    foodPos = mainGameMechsRef->getFoodPos();
+    foodPos = mainGameMechsRef->getFoodPos(); // Get the current food position
     
-    if(checkFoodConsumption()) {
-        increasePlayerLength();
-        mainGameMechsRef->incrementScore();
-        mainGameMechsRef->generateFood(playerPosList);
+    if(checkFoodConsumption()) { // If food is consumed
+        increasePlayerLength(); // Increase player's length
+        mainGameMechsRef->incrementScore(); // Increment the score
+        mainGameMechsRef->generateFood(playerPosList); // Generate new food
     } else {
-        playerPosList->insertHead(head);
-        playerPosList->removeTail();
+        playerPosList->insertHead(head); // Move the head
+        playerPosList->removeTail(); // Remove the tail to simulate movement
     }
 }
 
+// Checks if the player's head position matches the food position
 bool Player::checkFoodConsumption() {
     return(head.getPosX() == foodPos.getPosX() && head.getPosY() == foodPos.getPosY());
 }
 
+// Increases the player's length by adding a new head element
 void Player::increasePlayerLength() {
     playerPosList->insertHead(head);
 }
 
+// Checks if the player's head collides with its body
 void Player::checkPlayerCollision() {
-    int i;
-    for (i = 1; i < playerPosList->getSize(); i++) {
+    for (int i = 1; i < playerPosList->getSize(); i++) {
         int snakeX = playerPosList->getElement(i).getObjPos().getPosX();
         int snakeY = playerPosList->getElement(i).getObjPos().getPosY();
 
         if (head.getPosX() == snakeX && head.getPosY() == snakeY) {
-            mainGameMechsRef->setLoseFlag();
-            mainGameMechsRef->setExitTrue();
+            mainGameMechsRef->setLoseFlag(); // Mark the game as lost
+            mainGameMechsRef->setExitTrue(); // Trigger game exit
         }
     }
 }
