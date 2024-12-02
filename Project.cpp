@@ -3,7 +3,7 @@
 #include "objPos.h"
 #include "Player.h"
 #include "GameMechs.h"
-#include "objPosArrayList.h"
+#include "objPosArrayList.h" // Include all essential libraries and header files for different classes
 
 using namespace std;
 
@@ -13,7 +13,6 @@ using namespace std;
 bool exitFlag; // Indicates if the game should exit
 GameMechs* mainGame; // Pointer to the game mechanics object
 Player* player; // Pointer to the player object
-objPosArrayList* snake; // Pointer to the snake's position list
 
 // Function prototypes
 void Initialize(void);
@@ -23,11 +22,11 @@ void DrawScreen(void);
 void LoopDelay(void);
 void CleanUp(void);
 
-// Main function: Implements the game loop
+// Main function, implements the game loop which allows for synchronus input of the user until the exitFlag is set to true
 int main(void) {
     Initialize(); // Initialize game components
 
-    // Game loop: Runs until exit flag is set
+    // Game loop, runs until exit flag is set
     while(exitFlag == false) {
         GetInput(); // Process user input
         RunLogic(); // Update game logic
@@ -63,9 +62,8 @@ void GetInput(void) {
 // Updates game logic, including player movement and collision detection
 void RunLogic(void) {
     player->updatePlayerDir(); // Update player direction
-    player->movePlayer(); // Move the player
 
-    snake = player->getPlayerPos(); // Update snake position
+    player->movePlayer(); // Move the player
 
     exitFlag = mainGame->getExitFlagStatus(); // Check exit condition
 }
@@ -76,8 +74,15 @@ void DrawScreen(void) {
     int width = mainGame->getBoardSizeX();
     int height = mainGame->getBoardSizeY();
     int snakePrintCount = 0; // Tracks number of snake parts printed
-    
-    if(!mainGame->getExitFlagStatus()) {
+    if (mainGame->getExitFlagStatus()) {
+        if (mainGame->getWinFlagStatus()) { // Win message prints
+            MacUILib_printf("You win!\n");
+        } else if (mainGame->getLoseFlagStatus()) { // Lose message prints
+            MacUILib_printf("Collision Detected! You lose!\n");
+        } else {
+            MacUILib_printf("Forced Exit!\n"); // If none of the win or lose conditions print then print the forced exit message
+        }
+    } else {
         // Loop through the board grid
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -92,6 +97,7 @@ void DrawScreen(void) {
                 for (int k = 0; k < player->getPlayerPos()->getSize() && !printed; k++) { 
                     int posX = player->getPlayerPos()->getElement(k).getObjPos().getPosX();
                     int posY = player->getPlayerPos()->getElement(k).getObjPos().getPosY();
+
                     if ((i == posX) && (j == posY)) {
                         MacUILib_printf("%c", player->getPlayerPos()->getElement(k).getSymbol());
                         snakePrintCount++;
@@ -112,21 +118,17 @@ void DrawScreen(void) {
         
         // Display score and controls
         MacUILib_printf("Score: %d\n", mainGame->getScore());
-        MacUILib_printf("\nControls: W = Up, S = Down, A = Left, D = Right, / = Exit\n");
+        MacUILib_printf("\nControls: W = Up, S = Down, A = Left, D = Right, / = Exit");
 
-    } else if(mainGame->getLoseFlagStatus() && mainGame->getExitFlagStatus()) 
-        MacUILib_printf("Collision Detected! You lose!\n"); // Self collision message
-
-    else if(mainGame->getExitFlagStatus())
-        MacUILib_printf("Forced Exit!\n"); // Forced exit message
-}
+    }
+}   
 
 void LoopDelay(void) {
-    if(!mainGame->getLoseFlagStatus() && !mainGame->getExitFlagStatus())
+    if(!mainGame->getExitFlagStatus())
         MacUILib_Delay(DELAY_CONST); // 0.1s delay
     else
         MacUILib_Delay(DELAY_CONST*30); // Delay for message displayed during exit
-}
+}            
 
 void CleanUp(void) {
     MacUILib_clearScreen();    

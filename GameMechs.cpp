@@ -22,6 +22,7 @@ GameMechs::GameMechs(int boardX, int boardY) {
     score = 0;
     exitFlag = false;
     loseFlag = false;
+    winFlag = false;
     input = '\0';
 
     bitArraySize = ((boardSizeX * boardSizeY) / 32) + 1;
@@ -41,6 +42,11 @@ bool GameMechs::getExitFlagStatus() const {
 // Checks if the player has lost
 bool GameMechs::getLoseFlagStatus() const {
     return loseFlag;
+}
+
+// Checks if the player has lost
+bool GameMechs::getWinFlagStatus() const {
+    return winFlag;
 }
 
 // Retrieves current input character
@@ -76,6 +82,11 @@ void GameMechs::setExitTrue() {
 // Sets lose flag to true
 void GameMechs::setLoseFlag() {
     loseFlag = true;
+}
+
+// Sets win flag to true
+void GameMechs::setWinFlag() {
+    winFlag = true;
 }
 
 // Updates input with a given character

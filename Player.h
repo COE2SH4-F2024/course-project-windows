@@ -24,6 +24,7 @@ class Player {
         bool checkFoodConsumption(); // Check if the player consumes food
         void increasePlayerLength(); // Increase the player's length
         void checkPlayerCollision(); // Check for collisions with itself
+        void checkWin(); // Check if snake length equals size of the board
 
     private:
         objPosArrayList* playerPosList; // List of positions occupied by the player

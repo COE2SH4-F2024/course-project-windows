@@ -86,6 +86,8 @@ void Player::movePlayer() {
     
     checkPlayerCollision(); // Check if the player collides with itself
 
+    checkWin(); // Check if the length of the snake equals the size of the playable space in the board
+
     foodPos = mainGameMechsRef->getFoodPos(); // Get the current food position
     
     if(checkFoodConsumption()) { // If food is consumed
@@ -110,7 +112,7 @@ void Player::increasePlayerLength() {
 
 // Checks if the player's head collides with its body
 void Player::checkPlayerCollision() {
-    for (int i = 1; i < playerPosList->getSize(); i++) {
+    for (int i = 1; i < playerPosList->getSize(); i++) { // iterates through each element of the snake's tail
         int snakeX = playerPosList->getElement(i).getObjPos().getPosX();
         int snakeY = playerPosList->getElement(i).getObjPos().getPosY();
 
@@ -118,5 +120,12 @@ void Player::checkPlayerCollision() {
             mainGameMechsRef->setLoseFlag(); // Mark the game as lost
             mainGameMechsRef->setExitTrue(); // Trigger game exit
         }
+    }
+}
+
+void Player::checkWin() {
+    if(playerPosList->getSize() == (mainGameMechsRef->getBoardSizeX() - 2) * (mainGameMechsRef->getBoardSizeY() - 2)) { // Check if snake length is equal to the area excluding the borders
+        mainGameMechsRef->setWinFlag(); // Mark the game as won
+        mainGameMechsRef->setExitTrue(); // Trigger game exit
     }
 }

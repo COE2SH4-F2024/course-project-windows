@@ -19,6 +19,7 @@ class GameMechs {
 
         bool exitFlag; // Flag to determine if the game should exit
         bool loseFlag; // Flag to determine if the player has lost
+        bool winFlag; // Flag to determine if the player has won
 
         int score; // Current game score
 
@@ -41,6 +42,8 @@ class GameMechs {
         void setExitTrue(); // Set exit flag
         bool getLoseFlagStatus() const; // Check if lose flag is set
         void setLoseFlag(); // Set lose flag
+        bool getWinFlagStatus() const; // Check if win flag is set
+        void setWinFlag(); // Set win flag
 
         char getInput() const; // Get the current input
         void setInput(char this_input); // Set the current input
